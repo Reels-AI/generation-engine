@@ -15,7 +15,7 @@ def test_clip_videos():
         files = {"video_files": (os.path.basename(VIDEO_PATH), video_file, "video/mp4")}
         response = requests.post(f"{SERVER_URL}/clip_videos/", files=files)
     
-    if response.status_code == 200:
+    if response.    status_code == 200:
         print("Response status code:", response.status_code)
         print("Response content:", response.json())
     else:
@@ -70,8 +70,8 @@ def test_retrieve_embeddings(query_sentence):
     else:
         print("Error:", response.status_code, response.text)
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # test_clip_videos()
     # test_extract_images()
     # test_store_embeddings()
-    test_retrieve_embeddings("Robot")
+    # test_retrieve_embeddings("Robot")
