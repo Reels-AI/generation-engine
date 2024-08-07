@@ -1,0 +1,3 @@
+clips/
+videos/
+frames/

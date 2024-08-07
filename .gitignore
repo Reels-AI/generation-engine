@@ -1,0 +1,9 @@
+.env
+/env
+/videos
+/clips
+/frames
+/stats
+
+*.mp4
+*.jpg
