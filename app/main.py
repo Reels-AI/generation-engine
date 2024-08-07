@@ -18,6 +18,8 @@ app = FastAPI()
 
 # Directory paths
 VIDEOS_DIR = "data/videos"
+if not os.path.exists(VIDEOS_DIR):
+    os.makedirs(VIDEOS_DIR)
 
 # Initialize VideoSceneSplitter and VideoFrameExtractor with default values
 splitter = VideoSceneSplitter()

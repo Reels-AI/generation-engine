@@ -95,6 +95,9 @@ class VideoSceneSplitter:
             self.split_adaptive_video(video_path, video_output_dir, video_stats_file_name, output_file_template)
 
 # Example usage
+
+# data/videos/ all the videos will be clipped and stored in data/clips/ by default.
+
 # if __name__ == "__main__":
 #     videos_directory = 'videos'
 #     output_directory = 'clips'
@@ -102,3 +105,4 @@ class VideoSceneSplitter:
     
 #     splitter = VideoSceneSplitter()
 #     splitter.split_all_videos_in_directory(videos_directory, output_directory, stats_file_name)
+

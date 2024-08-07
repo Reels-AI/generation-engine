@@ -7,7 +7,6 @@ store these features in a Pinecone index, and perform similarity searches.
 
 import os
 from typing import List, Dict, Union, Optional
-
 import numpy as np
 import torch
 from PIL import Image

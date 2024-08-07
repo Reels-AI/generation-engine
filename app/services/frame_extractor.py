@@ -99,6 +99,9 @@ class VideoFrameExtractor:
             self.extract_first_frame(video_path, output_image_path)
 
 # Example usage
+
+# data/clips/ all the video clips will be stored in data/frames/ by default.
+
 # if __name__ == "__main__":
 #     clips_directory = 'clips'
 #     frames_directory = 'frames'
