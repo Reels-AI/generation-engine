@@ -1,6 +1,6 @@
 # Generation Engine
 
-This FastAPI application provides functionality for video processing, including clipping videos into scenes, extracting frames, and managing image embeddings using Pinecone and CLIP.
+Reelsai.me video generation engine
 
 ## Table of Contents
 
@@ -9,7 +9,6 @@ This FastAPI application provides functionality for video processing, including 
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Project Structure](#project-structure)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
@@ -33,6 +32,7 @@ python -m venv env
 source env/bin/activate
 ```
 3. Install packages:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -42,6 +42,50 @@ export PINECONE_API_KEY='your_pinecone_api_key'
 export PINECONE_INDEX_NAME='your_index_name'
 ```
 
+## Usage
+
+1. Start the FastAPI server:
+```bash
+python -m app.main
+```
+2. Access the API documentation at http://localhost:8000/docs to explore the available endpoints.
+
+## API Endpoints
+
+1. Clip Videos
+```http
+POST /clip_videos/
+```
+Description: Clips videos into scenes using adaptive thresholding.
+Request: Upload video files.
+Response: Confirmation message.
+
+2. Extract Images
+```http
+POST /extract_images/
+```
+Description: Extracts the first frame from all video clips and saves them as images.
+Response: Confirmation message.
+
+3. Store Embeddings
+```http
+POST /store_embeddings/
+```
+Description: Stores image embeddings in Pinecone.
+Request: JSON body with creds (API key and index name) and optional image_dir.
+Response: Confirmation message.
+
+4. Retrieve Embeddings
+```http
+POST /retrieve_embeddings/
+```
+Description: Retrieves relevant image embeddings from Pinecone based on a query sentence.
+Request: JSON body with api_key, index_name, and query_sentence.
+Response: List of relevant images.
+
+## Project Structure
+
+```
 generation-engine/
 │
 ├── app/
@@ -64,7 +108,7 @@ generation-engine/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
-
+```
 <!-- 
 generation-engine/
 │
