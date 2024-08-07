@@ -4,6 +4,6 @@
 /clips
 /frames
 /stats
-
+*__pycache__*
 *.mp4
 *.jpg

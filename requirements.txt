@@ -1,0 +1,15 @@
+fastapi==0.112.0
+huggingface-hub==0.24.5
+numpy==2.0.1
+opencv-python==4.10.0.84
+pillow==10.4.0
+pinecone-client==5.0.1
+python-multipart==0.0.9
+requests==2.32.3
+scenedetect==0.6.4
+tokenizers==0.19.1
+torch==2.4.0
+tqdm==4.66.5
+transformers==4.44.0
+urllib3==2.2.2
+uvicorn==0.30.5
