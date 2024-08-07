@@ -28,19 +28,19 @@ This FastAPI application provides functionality for video processing, including 
    cd generation-engine
 
 2. Create a virtual environment:
-
+```bash
 python -m venv env
 source env/bin/activate
-
+```
 3. Install packages:
-
+```bash
 pip install -r requirements.txt
-
+```
 4. Set up environment variables:
-
+```bash
 export PINECONE_API_KEY='your_pinecone_api_key'
 export PINECONE_INDEX_NAME='your_index_name'
-
+```
 
 generation-engine/
 │
