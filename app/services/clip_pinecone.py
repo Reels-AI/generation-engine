@@ -166,7 +166,7 @@ class CLIPPineconeIntegration:
                     image = Image.open(image_path)
                     image_features = self.extract_image_features(image)
                     image_id = f"image-{filename}"
-                    # metadata = {"path": image_path, "type": "image"}
+                    metadata = {"path": image_path, "type": "image"}
                     was_inserted = self.store_features(image_id, image_features, metadata)
                     if was_inserted:
                         logger.info(f"Stored features for {filename}")
