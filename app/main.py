@@ -11,7 +11,6 @@ from app.models import PineconeCreds, QueryModel
 from app.services.video_splitter import VideoSceneSplitter
 from app.services.frame_extractor import VideoFrameExtractor
 from app.services.clip_pinecone import CLIPPineconeIntegration
-
 app = FastAPI()
 
 # ====== NOTE: TO CHANGE SOON ======
@@ -37,6 +36,7 @@ async def clip_videos(video_files: List[UploadFile] = File(...), output_dir: Opt
                 buffer.write(video_file.file.read())
         
         splitter.split_all_videos_in_directory(VIDEOS_DIR, output_dir)
+        print(splitter.metadata)
         return {"message": "Videos clipped successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

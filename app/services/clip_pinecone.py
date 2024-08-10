@@ -12,7 +12,7 @@ import torch
 from PIL import Image
 from pinecone import Pinecone, ServerlessSpec
 from transformers import CLIPProcessor, CLIPModel
-
+import json
 import logging
 
 # Configure logging
@@ -153,7 +153,12 @@ class CLIPPineconeIntegration:
             return
         
         logger.info(f"Processing images from directory: {directory_path}")
-        
+
+        metadata_file_path = os.path.join('data', 'clips', 'metadata.json')
+
+        with open(metadata_file_path, 'r') as f:
+            main_metadata = json.load(f)
+            
         for filename in os.listdir(directory_path):
             if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
                 image_path = os.path.join(directory_path, filename)
@@ -161,7 +166,7 @@ class CLIPPineconeIntegration:
                     image = Image.open(image_path)
                     image_features = self.extract_image_features(image)
                     image_id = f"image-{filename}"
-                    metadata = {"path": image_path, "type": "image"}
+                    # metadata = {"path": image_path, "type": "image"}
                     was_inserted = self.store_features(image_id, image_features, metadata)
                     if was_inserted:
                         logger.info(f"Stored features for {filename}")

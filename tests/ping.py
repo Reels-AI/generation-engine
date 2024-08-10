@@ -70,8 +70,10 @@ def test_retrieve_embeddings(query_sentence):
     else:
         print("Error:", response.status_code, response.text)
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     # test_clip_videos()
     # test_extract_images()
     # test_store_embeddings()
-    # test_retrieve_embeddings("Robot")
+    test_retrieve_embeddings("Hello man walking")
+
+    # {'sentence 1' : [clip_id_1, clip_id_2, ...], 'sentence 2' : [clip_id_1, clip_id_2, ...], ...}
