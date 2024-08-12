@@ -63,6 +63,36 @@ async def clip_videos(video_files: List[UploadFile] = File(...), output_dir: Opt
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/clip_all_videos/")
+async def clip_videos(input_dir: Optional[str] = "./videos/", output_dir: Optional[str] = "./data/videos/"):
+    """
+    Clip videos into scenes using adaptive thresholding.
+    """
+    try:
+        video_files = []
+
+        input_dir = os.path.dirname(input_dir)
+        output_dir = os.path.dirname(output_dir)
+        clips_output_dir = os.path.dirname("./data/clips/")
+
+        # Iterate through the files in the input directory
+        for filename in os.listdir(input_dir):
+            if filename.endswith(".mp4"):
+                input_file_path = os.path.join(input_dir, filename)
+                output_file_path = os.path.join(output_dir, filename)
+
+                # Read the video file and write it to the output directory
+                with open(input_file_path, "rb") as video_file:
+                    with open(output_file_path, "wb") as buffer:
+                        buffer.write(video_file.read())
+
+        splitter.split_all_videos_in_directory(output_dir, clips_output_dir)
+        print(splitter.metadata)
+        return {"message": "Videos clipped successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/extract_images/")
 async def extract_images():
     """
@@ -80,6 +110,7 @@ async def store_embeddings(creds: PineconeCreds, image_dir: Optional[str] = None
     """
     Store image embeddings in Pinecone.
     """
+    print(creds)
     try:
         clip_pinecone = CLIPPineconeIntegration(
             api_key=creds.api_key, index_name=creds.index_name)
