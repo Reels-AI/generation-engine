@@ -48,8 +48,9 @@ class YouTubeVideoDownloader:
             # Generate a unique filename using UUID
             unique_id = uuid.uuid4().hex
             ydl_opts = {
-                'format': 'best',
+                'format': 'bestvideo[height<=1080]+bestaudio/bestvideo[height<=720]+bestaudio/best',
                 'outtmpl': os.path.join(output_path, f'{unique_id}.%(ext)s'),
+                'merge_output_format': 'mp4',  # Ensure the final output is in mp4 format
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:

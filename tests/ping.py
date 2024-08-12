@@ -1,13 +1,14 @@
 import requests
 import os
 import json
+from typing import List
 
 # ===== ENVIRONMENT VARIABLES =====
 SERVER_URL = "http://localhost:8000"
 VIDEO_PATH = "../videos/video.mp4"
 VIDEO_FOLDER_PATH = "../videos"
 PINECONE_API_KEY = "f045bc0a-d427-443c-a2be-b81fd2205e88"
-PINECONE_INDEX_NAME = "dev-test-04"
+PINECONE_INDEX_NAME = "dev-test-05"
 # Optional: (if not provided, it will use FRAMES_DIR from the server)
 IMAGE_DIR = 'frames'
 
@@ -84,24 +85,11 @@ def test_retrieve_embeddings(query_sentence):
         print("Error:", response.status_code, response.text)
 
 
-def test_download_video(youtube_url):
-    # Extract the directory from VIDEO_PATH
-    output_dir = os.path.dirname(VIDEO_PATH)
-
-    # Send video_url as a query parameter
-    params = {
-        "video_url": youtube_url
-    }
-
-    # Send output_dir as part of the JSON payload
-    payload = {
-        "output_dir": output_dir
-    }
-
+def test_download_videos(youtube_urls: List[str]):
+    # Send the POST request to the /download_videos/ endpoint
     response = requests.post(
-        f"{SERVER_URL}/download_video/",
-        params=params,
-        json=payload
+        f"{SERVER_URL}/download_videos/",
+        json=youtube_urls  # Send the list directly
     )
 
     if response.status_code == 200:
@@ -131,13 +119,11 @@ def test_retrieve_clips_for_script(script_text):
 
 
 if __name__ == "__main__":
-    # test_download_video("https://www.youtube.com/watch?v=xj1SlU7Tyo0")
-    # test_download_video("https://www.youtube.com/watch?v=oJySuIRWQIk")
-    # test_download_video("https://www.youtube.com/watch?v=Ec9-5LkSzvI")
-    # test_download_video("https://www.youtube.com/watch?v=yYpQvo1Et_k")
+    test_download_videos(["https://www.youtube.com/watch?v=xj1SlU7Tyo0", "https://www.youtube.com/watch?v=oJySuIRWQIk",
+                          "https://www.youtube.com/watch?v=Ec9-5LkSzvI", "https://www.youtube.com/watch?v=yYpQvo1Et_k"])
     # test_clip_videos()
     # test_extract_images()
-    test_store_embeddings()
+    # test_store_embeddings()
     # test_retrieve_embeddings("Hello man walking")
     # test_retrieve_clips_for_script("This is Kevin Piette, carrying the Olympic torch ahead of the opening ceremony of the Olympics earlier this week.  Having been in an accident 11 years ago that left him paraplegic, he's returned to tennis as a para-athlete. In this clip, he is seen using Atlante X an exoskeleton designed by Wandercraft that enables patients with upper extremity dysfunction or cognitive challenges to stand up and walk hands-free. As one of the first users of this exoskeleton, he has contributed to its improvement, igniting the future and showcasing the power of the human spirit and cutting-edge exoskeleton technology!")
 

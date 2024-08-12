@@ -40,6 +40,11 @@ extractor = VideoFrameExtractor()
 reel_generator = FinalReelGenerator()
 
 
+class ReelData(BaseModel):
+    video_clips: List[str]  # List of video clip URLs (blobs)
+    script: str  # The sentence for which the clips are provided
+
+
 @app.post("/clip_videos/")
 async def clip_videos(video_files: List[UploadFile] = File(...), output_dir: Optional[str] = None):
     """
@@ -99,18 +104,19 @@ async def retrieve_embeddings(query: QueryModel):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/download_video/")
-async def download_video(video_url: str, output_dir: Optional[str] = None):
+@app.post("/download_videos/")
+async def download_videos(video_urls: List[str]):
     """
-    Download a YouTube video based on its URL.
+    Download multiple YouTube videos based on their URLs.
     """
     try:
-        # Create an instance of the downloader
+        output_dir = os.path.dirname("./videos/")
         downloader = YouTubeVideoDownloader()
 
-        # Call the method on the instance
-        downloader.download_youtube_video(video_url, output_dir)
-        return {"message": "Video downloaded successfully."}
+        for video_url in video_urls:
+            downloader.download_youtube_video(video_url, output_dir)
+
+        return {"message": "All videos downloaded successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -163,11 +169,6 @@ async def get_clips_for_script(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-class ReelData(BaseModel):
-    video_clips: List[str]  # List of video clip URLs (blobs)
-    script: str  # The sentence for which the clips are provided
-
-
 @app.post("/create_reels/")
 async def create_reels(reels_data: List[ReelData]):
     try:
@@ -187,7 +188,7 @@ async def create_reels(reels_data: List[ReelData]):
             script = reel.script
 
             # Call the create_reel function for each reel data item
-            video_clip = reel_generator.create_reel(video_files, script, "app/services/Roboto-Bold.ttf")
+            video_clip = reel_generator.create_reel(video_files, script)
             final_videos.append(video_clip)
 
         # Concatenate all clips into one final reel

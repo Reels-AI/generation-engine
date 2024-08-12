@@ -7,6 +7,7 @@ from .google_text_to_speech import GoogleCloudAudioProcessor
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import textwrap
+from moviepy.video.fx.all import crop
 
 
 # Configure logging
@@ -86,6 +87,17 @@ class FinalReelGenerator:
             # Concatenate the video clips into a single video
             final_reel = concatenate_videoclips(reel_clips)
 
+            # Crop the video to a 9:16 aspect ratio for Instagram and YouTube reels
+            width, height = final_reel.size
+            if width > height:
+                new_width = height * 9 / 16
+                final_reel = crop(final_reel, width=new_width,
+                                  height=height, x_center=width / 2)
+            else:
+                new_height = width * 16 / 9
+                final_reel = crop(final_reel, width=width,
+                                  height=new_height, y_center=height / 2)
+
             # Set the audio to the video
             final_reel = final_reel.set_audio(audio)
 
@@ -117,7 +129,7 @@ class FinalReelGenerator:
             if os.path.exists(temp_reel_file_path):
                 os.remove(temp_reel_file_path)
 
-    def add_captions_to_video(self, video_path, word_timings, font='Roboto-Bold.ttf', fontsize=20, color='white', highlight_color='yellow', fps=24):
+    def add_captions_to_video(self, video_path, word_timings, font='Bangers-Regular.ttf', fontsize=40, color='white', highlight_bg_color='black', fps=24):
         """
         Adds captions to an existing video using the provided word timings.
 
@@ -127,7 +139,7 @@ class FinalReelGenerator:
         - font: Font to use for the captions.
         - fontsize: Font size of the captions.
         - color: Color of the caption text.
-        - highlight_color: Color of the highlighted word text.
+        - highlight_bg_color: Background color for the word currently being spoken.
         - fps: Frames per second for the output video.
         """
 
@@ -145,7 +157,7 @@ class FinalReelGenerator:
         full_text = ' '.join(all_words)
 
         # Calculate the maximum width for text (video width - 50 pixels)
-        max_text_width = frame_size[0] - 50
+        max_text_width = frame_size[0] - 100
 
         # Function to wrap text dynamically based on the maximum width
         def wrap_text(text, font, max_width):
@@ -189,32 +201,27 @@ class FinalReelGenerator:
             # 25 pixels margin on both sides and 20 pixels from the bottom
             text_position = (25, frame_size[1] - text_height - 20)
 
-            # Draw the full text
+            # Draw the full text with a black background for the current word
             y_position = text_position[1]
             for line in lines:
-                draw.text((text_position[0], y_position),
-                          line, font=font, fill=color)
-                # Move to the next line with spacing
-                y_position += font.getbbox(line)[3] + 10
-
-            # Highlight the current word
-            if current_word:
                 current_x = text_position[0]
-                current_y = text_position[1]
+                words = line.split(' ')
+                for word in words:
+                    word_width = font.getbbox(word)[2]
+                    if word == current_word:
+                        # Draw black background rectangle
+                        word_height = font.getbbox(word)[3]
+                        draw.rectangle([current_x, y_position, current_x + word_width,
+                                       y_position + word_height], fill=highlight_bg_color)
+                        # Draw the word on top of the background
+                        draw.text((current_x, y_position),
+                                  word, font=font, fill=color)
+                    else:
+                        draw.text((current_x, y_position),
+                                  word, font=font, fill=color)
+                    current_x += word_width + font.getbbox(' ')[2]
 
-                for line in lines:
-                    words = line.split(' ')
-                    for word in words:
-                        word_width = font.getbbox(word)[2]
-                        if word == current_word:
-                            draw.text((current_x, current_y), word,
-                                      font=font, fill=highlight_color)
-                        current_x += word_width + font.getbbox(' ')[2]
-
-                    # Move to the next line
-                    current_x = text_position[0]
-                    # Move to the next line with spacing
-                    current_y += font.getbbox(line)[3] + 10
+                y_position += font.getbbox(line)[3] + 10
 
             return np.array(img)
 
@@ -252,11 +259,11 @@ class FinalReelGenerator:
         """
         try:
             target_fps = 24
-            target_resolution = (1920, 1080)
+            target_resolution = (1080, 1920)  # Set to 9:16 aspect ratio
 
             # Ensure all clips have the same frame rate and resolution
-            clips = [self.prepare_clip(clip, target_fps, target_resolution)
-                     for clip in video_clips]
+            clips = [self.prepare_clip(
+                clip, target_fps, target_resolution) for clip in video_clips]
 
             # Concatenate the video clips into a single video
             final_reel = concatenate_videoclips(clips, method="compose")
